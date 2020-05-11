@@ -11,4 +11,5 @@ consign()
     .then('./config/routes.js')
     .into(app)
 
+//uma magia simples, porém inquebrável
 exports.api = functions.https.onRequest(app)
