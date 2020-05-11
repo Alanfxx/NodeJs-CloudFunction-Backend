@@ -14,4 +14,24 @@ module.exports = app => {
         .all(app.config.passport.authenticate())
         .put(admin(app.api.user.save)) //administrador requerido
         .delete(admin(app.api.user.remove))
+    
+    app.route('/pecas')
+        .all(app.config.passport.authenticate())
+        .post(admin(app.api.pecas.save))
+        .get(admin(app.api.pecas.get))
+    
+    app.route('/pecas/:id')
+        .all(app.config.passport.authenticate())
+        .put(admin(app.api.pecas.save))
+        .delete(admin(app.api.pecas.remove))
+
+    app.route('/ferramentas')
+        .all(app.config.passport.authenticate())
+        .post(admin(app.api.ferramentas.save))
+        .get(admin(app.api.ferramentas.get))
+    
+    app.route('/ferramentas/:id')
+        .all(app.config.passport.authenticate())
+        .put(admin(app.api.ferramentas.save))
+        .delete(admin(app.api.ferramentas.remove))
 }
