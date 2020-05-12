@@ -6,10 +6,30 @@ module.exports = app => {
             ref: req.body.ref,
             quant: req.body.quant,
         }
-        if (req.params.id) peca.id = req.params.id
+        //VALIDAÇÕES
+        try {
+            existsOrError(peca.name, 'Nome não informado')
+            existsOrError(peca.ref, 'Referência não informada')
+            existsOrError(peca.quant, 'Quantidade não informada')
 
-        if (peca.id) {
-            let documentRef = app.config.db.pecas.doc(peca.id)
+            if (!req.params.id) {
+                let pecaFromDB
+                await app.config.db.pecas.get()
+                    .then(docs => {
+                        docs.forEach(doc => {
+                            if (doc.data().name === peca.name) {
+                                pecaFromDB = doc.data()
+                            }
+                        })
+                    })
+                notExistsOrError(pecaFromDB, 'Peça já cadastrada')
+            }
+        } catch (mssg) {
+            return res.status(400).send(mssg)
+        }
+        // if (req.params.id) peca.id = req.params.id
+        if (req.params.id) {
+            let documentRef = app.config.db.pecas.doc(req.params.id)
             await documentRef.update(peca)
                 .then(_ => res.status(204).send())
                 .catch(err => res.status(500).send(err))

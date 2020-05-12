@@ -15,7 +15,8 @@ module.exports = app => {
             password: req.body.password,
             confirmPassword: req.body.confirmPassword
         }
-        if (req.params.id) user.id = req.params.id
+        // if (req.params.id) user.id = req.params.id
+        const id = req.params.id ? req.params.id : undefined
         if (req.user && req.user.admin) {
             if (req.body.admin && req.originalUrl.startsWith('/users')) user.admin = req.body.admin
         }
@@ -27,7 +28,7 @@ module.exports = app => {
             existsOrError(user.confirmPassword, 'Confirmação de senha inválida')
             equalsOrError(user.password, user.confirmPassword, 'Senhas não conferem')
 
-            if (!user.id) {
+            if (!id) {
                 let userFromDB
                 await app.config.db.users.get()
                     .then(docs => {
@@ -46,8 +47,8 @@ module.exports = app => {
         user.password = encryptPassword(user.password)
         delete user.confirmPassword
 
-        if (user.id) {
-            let documentRef = app.config.db.users.doc(user.id)
+        if (id) {
+            let documentRef = app.config.db.users.doc(id)
             await documentRef.update(user)
                 .then(_ => res.status(204).send())
                 .catch(err => res.status(500).send(err))
@@ -83,5 +84,3 @@ module.exports = app => {
 
     return { save, get, remove }
 }
-//put salva com o id que vem na requisição, o firebase n gera automaticamente
-//put insere o id como atributo do user (talvez isso seja util)

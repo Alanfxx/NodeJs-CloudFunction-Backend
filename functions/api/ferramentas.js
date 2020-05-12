@@ -5,10 +5,29 @@ module.exports = app => {
             name: req.body.name,
             quant: req.body.quant,
         }
-        if (req.params.id) ferramenta.id = req.params.id
+        //VALIDAÇÕES
+        try {
+            existsOrError(ferramenta.name, 'Nome não informado')
+            existsOrError(ferramenta.quant, 'Quantidade não informada')
 
-        if (ferramenta.id) {
-            let documentRef = app.config.db.ferramentas.doc(ferramenta.id)
+            if (!req.params.id) {
+                let ferramentaFromDB
+                await app.config.db.ferramentas.get()
+                    .then(docs => {
+                        docs.forEach(doc => {
+                            if (doc.data().name === ferramenta.name) {
+                                ferramentaFromDB = doc.data()
+                            }
+                        })
+                    })
+                notExistsOrError(ferramentaFromDB, 'Ferramenta já cadastrada')
+            }
+        } catch (mssg) {
+            return res.status(400).send(mssg)
+        }
+        // if (req.params.id) ferramenta.id = req.params.id
+        if (req.params.id) {
+            let documentRef = app.config.db.ferramentas.doc(req.params.id)
             await documentRef.update(ferramenta)
                 .then(_ => res.status(204).send())
                 .catch(err => res.status(500).send(err))
