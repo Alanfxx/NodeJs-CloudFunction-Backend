@@ -14,7 +14,7 @@ module.exports = app => {
             let ferramentaFromDB
             await app.config.db.ferramentas.get().then(docs => {
                 docs.forEach(doc => {
-                    if (doc.data().name === ferramenta.name) {
+                    if (doc.data().name.toUpperCase() === ferramenta.name.toUpperCase()) {
                         ferramentaFromDB = {
                             id: doc.id,
                             name: doc.data().name,

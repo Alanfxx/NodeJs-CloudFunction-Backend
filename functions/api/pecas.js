@@ -16,7 +16,7 @@ module.exports = app => {
             let pecaFromDB
             await app.config.db.pecas.get().then(docs => {
                 docs.forEach(doc => {
-                    if (doc.data().ref === peca.ref) {
+                    if (doc.data().ref.toUpperCase() === peca.ref.toUpperCase()) {
                         pecaFromDB = {
                             id: doc.id,
                             name: doc.data().name,

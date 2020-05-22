@@ -33,13 +33,14 @@ module.exports = app => {
                 await app.config.db.users.get()
                     .then(docs => {
                         docs.forEach(doc => {
-                            if (doc.data().email === user.email) {
+                            if (doc.data().email.toUpperCase() === user.email.toUpperCase()) {
                                 userFromDB = doc.data()
                             }
                         })
                     })
                 notExistsOrError(userFromDB, 'Usuário já cadastrado')
             }
+            //Falta verificar se email de usuário editado já existe
         } catch (mssg) {
             return res.status(400).send(mssg)
         }
