@@ -1,5 +1,5 @@
 module.exports = app => {
-    const { existsOrError, notExistsOrError, equalsOrError } = app.api.validation
+    const { existsOrError, notExistsOrError, equalsOrError, positiveOrError } = app.api.validation
 
     const save = async (req, res) => {
         const ferramenta = {
@@ -9,7 +9,11 @@ module.exports = app => {
         //VALIDAÇÕES
         try {
             existsOrError(ferramenta.name, 'Nome não informado')
-            existsOrError(ferramenta.quant, 'Quantidade não informada')
+            if(ferramenta.quant !== 0)
+                if(!ferramenta.quant) {
+                    existsOrError(ferramenta.quant, 'Quantidade não informada')
+                }
+            positiveOrError(ferramenta.quant, 'Quantidade não pode ser negativa')
 
             let ferramentaFromDB
             await app.config.db.ferramentas.get().then(docs => {

@@ -1,5 +1,5 @@
 module.exports = app => {
-    const { existsOrError, notExistsOrError, equalsOrError } = app.api.validation
+    const { existsOrError, notExistsOrError, equalsOrError, positiveOrError } = app.api.validation
 
     const save = async (req, res) => {
         const peca = {
@@ -11,7 +11,11 @@ module.exports = app => {
         try {
             existsOrError(peca.name, 'Nome não informado')
             existsOrError(peca.ref, 'Referência não informada')
-            existsOrError(peca.quant, 'Quantidade não informada')
+            if(peca.quant !== 0)
+                if(!peca.quant) {
+                    existsOrError(peca.quant, 'Quantidade não informada')
+                }
+            positiveOrError(peca.quant, 'Quantidade não pode ser negativa')
 
             let pecaFromDB
             await app.config.db.pecas.get().then(docs => {
