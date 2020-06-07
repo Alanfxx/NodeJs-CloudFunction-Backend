@@ -55,7 +55,7 @@ module.exports = app => {
                 .catch(err => res.status(500).send(err))
         } else {
             await app.config.db.users.add(user)
-                .then(_ => res.status(204).send())
+                .then(ref => res.status(201).send(ref.id))
                 .catch(err => res.status(500).send(err))
         }
     }
@@ -71,7 +71,7 @@ module.exports = app => {
                         email: doc.data().email
                     })
                 })
-                res.status(200).json(users)
+                return res.status(200).json(users)
             })
             .catch(err => res.status(500).send(err))
     }

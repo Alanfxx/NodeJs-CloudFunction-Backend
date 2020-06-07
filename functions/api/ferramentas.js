@@ -45,7 +45,7 @@ module.exports = app => {
                 .catch(err => res.status(500).send(err))
         } else {
             return await app.config.db.ferramentas.add(ferramenta)
-                .then(_ => res.status(204).send())
+                .then(ref => res.status(201).send(ref.id))
                 .catch(err => res.status(500).send(err))
         }
     }
@@ -60,7 +60,7 @@ module.exports = app => {
                     quant: doc.data().quant
                 })
             })
-            res.status(200).json(ferramentas)
+            return res.status(200).json(ferramentas)
         }).catch(err => res.status(500).send(err))
     }
 

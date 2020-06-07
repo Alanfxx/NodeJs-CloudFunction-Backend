@@ -33,7 +33,7 @@ module.exports = app => {
             exp: now + (60 * 60 * 24 * 3) //Expiração pra 3 dias
         }
 
-        res.json({
+        return res.json({
             id: payload.id,
             name: payload.name,
             email: payload.email,
@@ -55,9 +55,10 @@ module.exports = app => {
             }
         } catch (e) {
             //problema com o token
+            return res.send(false)
         }
 
-        res.send(false)
+        return res.send(false)
     }
 
     return { signin, validateToken }
